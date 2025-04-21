@@ -3,16 +3,22 @@ from product_2_step_2 import *
 
 class Store:
     def __init__(self, products=None):
+        if products:
+            for item in products:
+                if not isinstance(item, Product):
+                    raise TypeError(f"All items must be instances of product with {type(item)}.")
         self.products = products or []
 
     def add_product(self, product):
         if not isinstance(product, Product):
-            raise ValueError("Only instances of Product can be added.")
+            raise TypeError("Only instances of Product can be added.")
         self.products.append(product)
         print(f"{product.name} has been added to the store.")
 
     def remove_product(self, product):
-        if product in self.products:
+        if not isinstance(product, Product):
+            raise TypeError("Only instances of Product can be removed.")
+        if product in self.products and product.is_active():
             self.products.remove(product)
             print(f"{product.name} has been removed from the store.")
         else:

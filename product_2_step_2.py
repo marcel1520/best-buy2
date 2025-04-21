@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 class Product:
     def __init__(self, name: str, price: float, quantity=None, promotion=None):
         # Run validations to the received arguments
+        if quantity is not None and not isinstance(quantity, int):
+            raise TypeError("Quantity must be integer")
         assert price >= 0, f"Price {price} is not greater than or equal to zero!"
         assert quantity is None or quantity >= 0, f"Quantity {quantity} is not greater than or equal to zero!"
         assert len(name) >= 5, f"Product name must be at least 5 characters long!"
@@ -11,42 +13,57 @@ class Product:
         # Assign to self object
         self.name = name
         self.price = price
-        self.quantity = quantity
+        self._quantity = quantity
         self.promotion = promotion
 
-    def get_quantity(self):
-        return self.quantity
+    @property
+    def quantity(self):
+        return self._quantity
 
-    def set_quantity(self, quantity):
-        if quantity < 0:
-            raise ValueError(f"Quantity {quantity} cannot be less than zero!")
-        self.quantity = quantity
+    @quantity.setter
+    def quantity(self, value):
+        if not isinstance(value, int):
+            raise TypeError("Quantity must be integer")
+        if value < 0:
+            raise ValueError(f"Quantity cannot be less than zero!")
+        self._quantity = value
+
+        if value == 0:
+            self.deactivate()
 
     def is_active(self):
-        return self.quantity is None or self.quantity > 0
+        return self._quantity is None or self._quantity > 0
 
     def activate(self):
-        if self.quantity <= 0:
+        if self._quantity <= 0:
             self.quantity = 1
         print(f"{self.name} has been activated.")
 
     def deactivate(self):
-        self.quantity = 0
+        self._quantity = 0
         print(f"{self.name} has been deactivated")
 
     def show(self):
-        return f"{self.name}, {self.price}, {self.quantity}, {self.promotion}"
+        return f"{self.name}, {self.price}, {self._quantity}, {self.promotion}"
 
     def buy(self, quantity):
-        if self.quantity is None:
+        if not isinstance(quantity, int):
+            raise TypeError("Quantity must be integer")
+
+        if not self.is_active:
+            raise ValueError(f"Product {self.name} is inactive and cannot be purchased")
+        if self._quantity is None:
             return self.price * quantity
 
-        if quantity > self.quantity:
+        if quantity > self._quantity:
             raise ValueError("Not enough stock to complete purchase.")
 
-        self.quantity -= quantity
+        self._quantity -= quantity
 
-        if self.quantity is not None and self.quantity == 0:
+        if quantity <= 0:
+            raise ValueError("Quantity must be larger zero.")
+
+        if self._quantity is not None and self._quantity == 0:
             self.deactivate()
 
         if self.promotion:
@@ -57,7 +74,7 @@ class Product:
         self.promotion = promotion
 
     def __str__(self):
-        return f"{self.name}, Price: ${self.price:.2f}, Quantity: {self.quantity}, Promotion: {self.promotion}"
+        return f"{self.name}, Price: ${self.price:.2f}, Quantity: {self._quantity}, Promotion: {self.promotion}"
 
 
 class NonStockedProduct(Product):
@@ -96,7 +113,7 @@ class LimitedProduct(Product):
         return super().buy(quantity)
 
     def show(self):
-        return f"{self.name} - {self.price} (Limit: {self.maximum} per order, Stock: {self.quantity})"
+        return f"{self.name} - {self.price} (Limit: {self.maximum} per order, Stock: {self._quantity})"
 
 
 class Promotions(ABC):

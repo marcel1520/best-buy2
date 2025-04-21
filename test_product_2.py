@@ -15,7 +15,7 @@ def test_add_product():
 def test_add_invalid_product():
     store = Store()
 
-    with pytest.raises(ValueError, match="Only instances of Product can be added."):
+    with pytest.raises(TypeError, match="Only instances of Product can be added."):
         store.add_product("not a product")
 
 def test_buy_valid_quantity():
