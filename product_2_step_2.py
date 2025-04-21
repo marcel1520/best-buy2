@@ -108,9 +108,13 @@ class LimitedProduct(Product):
         self.maximum = maximum
 
     def buy(self, quantity):
-        if quantity > self.maximum:
-            raise ValueError(f"Cannot buy more than {self.maximum}")
-        return super().buy(quantity)
+        try:
+            if quantity > self.maximum:
+                raise ValueError(f"Cannot buy more than {self.maximum}")
+            return super().buy(quantity)
+        except ValueError as e:
+            print(e)
+            return None
 
     def show(self):
         return f"{self.name} - {self.price} (Limit: {self.maximum} per order, Stock: {self._quantity})"
