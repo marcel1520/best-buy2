@@ -35,7 +35,7 @@ class Store:
                 if product.quantity < quantity:
                     print(f"{product.name} is not available in the requested quantity.")
                     continue
-                product.quantity -= quantity
+
             total_price += product.buy(quantity)
             print(f"Added {quantity} of {product.name} to the order.")
 
@@ -53,10 +53,10 @@ perc_disc = PercentDiscount("30% off", 30)
 
 
 store = Store(
-    [Product("MacBook Air M2", price=1450, quantity=100, promotion=second_half),
-     Product("Bose QuietComfort Earbuds", price=250, quantity=500, promotion=third_free),
-     Product("Google Pixel 7", price=500, quantity=250, promotion=None),
-     NonStockedProduct("Windows License", price=125, promotion=perc_disc),
-     LimitedProduct("Shipping Fee", price=10, quantity=250, maximum=1),
+    [Product("MacBook Air M2", price=50, quantity=10, promotion=second_half),
+     Product("Bose QuietComfort Earbuds", price=40, quantity=50, promotion=third_free),
+     Product("Google Pixel 7", price=30, quantity=25, promotion=None),
+     NonStockedProduct("Windows License", price=20, promotion=perc_disc),
+     LimitedProduct("Shipping Fee", price=10, quantity=20, maximum=1),
     ]
 )
