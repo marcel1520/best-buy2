@@ -103,11 +103,11 @@ class NonStockedProduct(Product):
 
 
 class LimitedProduct(Product):
-    def __init__(self, name: str, price: float, quantity, maximum):
+    def __init__(self, name: str, price: float, quantity: int, maximum: int):
         super().__init__(name, price, quantity)
         self.maximum = maximum
 
-    def buy(self, quantity):
+    def buy(self, quantity: int):
         try:
             if quantity > self.maximum:
                 raise ValueError(f"Cannot buy more than {self.maximum}")

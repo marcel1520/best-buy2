@@ -42,8 +42,10 @@ class Store:
                     print(f"{product.name} is not available in the requested quantity.")
                     continue
 
-            total_price += product.buy(quantity)
-            print(f"Added {quantity} of {product.name} to the order.")
+            price = product.buy(quantity)
+            if price is not None:
+                total_price += product.buy(quantity)
+                print(f"Added {quantity} of {product.name} to the order.")
 
         return total_price
 
@@ -66,3 +68,4 @@ store = Store(
      LimitedProduct("Shipping Fee", price=10, quantity=20, maximum=1),
     ]
 )
+
